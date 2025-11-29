@@ -3,35 +3,48 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// GET project by id
-export async function GET(req: Request, ctx: { params: { id: string } }) {
-  const { id } = ctx.params;
-
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await params;
+    const projectId = parseInt(id);
+
     const project = await prisma.project.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: projectId },
       include: { tasks: true },
     });
 
     if (!project) {
-      return NextResponse.json({ error: "Project not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Project not found" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(project);
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Failed to fetch project" }, { status: 500 });
+    console.error("Error fetching project:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch project" },
+      { status: 500 }
+    );
   }
 }
 
-// PUT update project
-export async function PUT(req: Request, ctx: { params: { id: string } }) {
-  const { id } = ctx.params;
-  const body = await req.json();
 
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await params;
+    const projectId = parseInt(id);
+    const body = await request.json();
+
     const project = await prisma.project.update({
-      where: { id: parseInt(id) },
+      where: { id: projectId },
       data: {
         name: body.name,
         description: body.description,
@@ -44,20 +57,33 @@ export async function PUT(req: Request, ctx: { params: { id: string } }) {
 
     return NextResponse.json(project);
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Failed to update project" }, { status: 500 });
+    console.error("Error updating project:", error);
+    return NextResponse.json(
+      { error: "Failed to update project" },
+      { status: 500 }
+    );
   }
 }
 
-// DELETE project
-export async function DELETE(req: Request, ctx: { params: { id: string } }) {
-  const { id } = ctx.params;
 
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    await prisma.project.delete({ where: { id: parseInt(id) } });
-    return NextResponse.json({ message: "Project deleted" });
+    const { id } = await params;
+    const projectId = parseInt(id);
+
+    await prisma.project.delete({
+      where: { id: projectId },
+    });
+
+    return NextResponse.json({ message: "Project deleted successfully" });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Failed to delete project" }, { status: 500 });
+    console.error("Error deleting project:", error);
+    return NextResponse.json(
+      { error: "Failed to delete project" },
+      { status: 500 }
+    );
   }
 }

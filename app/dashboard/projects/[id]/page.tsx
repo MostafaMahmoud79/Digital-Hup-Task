@@ -16,7 +16,7 @@ export default function ProjectPage() {
 
   const projectIdParam = params?.id;
   const projectId = projectIdParam ? parseInt(projectIdParam as string) : null;
-  const isEditMode = searchParams.get("edit") === "true";
+  const isEditMode = searchParams?.get("edit") === "true";
 
   const { projects, loading } = useProjects();
   const [pageReady, setPageReady] = useState(false);
@@ -26,15 +26,6 @@ export default function ProjectPage() {
   useEffect(() => {
     if (!loading) {
       setPageReady(true);
-      console.log("Page Ready - ProjectDetail");
-      console.log(`Project ID: ${projectId}`);
-      console.log(`Edit Mode: ${isEditMode}`);
-      console.log(`Projects in store: ${projects.length}`);
-      console.log(`Project found: ${!!project}`);
-      if (project) {
-        console.log(`Project name: ${project.name}`);
-        console.log(`Project ID value: ${project.id}`);
-      }
     }
   }, [loading, projectId, project, projects.length, isEditMode]);
 
@@ -48,7 +39,6 @@ export default function ProjectPage() {
       </div>
     );
   }
-
 
   if (!projectId || isNaN(projectId)) {
     return (
@@ -65,7 +55,7 @@ export default function ProjectPage() {
               onClick={() => router.push("/dashboard/projects")}
               className="mt-4"
             >
-              ← Back to Projects
+              Back to Projects
             </Button>
           </CardContent>
         </Card>
@@ -84,14 +74,11 @@ export default function ProjectPage() {
             <p className="text-sm text-red-600 mt-2">
               Could not find project with ID: {projectId}
             </p>
-            <p className="text-xs text-red-500 mt-4">
-              Available projects: {projects.map((p) => p.id).join(", ")}
-            </p>
             <Button
               onClick={() => router.push("/dashboard/projects")}
               className="mt-4"
             >
-              ← Back to Projects
+              Back to Projects
             </Button>
           </CardContent>
         </Card>
@@ -99,7 +86,6 @@ export default function ProjectPage() {
     );
   }
 
-  // Project Found - Show Details
   return (
     <div className="container mx-auto py-6 sm:py-10 px-4 sm:px-6">
       {isEditMode && (
