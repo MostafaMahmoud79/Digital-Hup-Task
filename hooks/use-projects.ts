@@ -6,7 +6,7 @@ import { useProjectsStore } from "@/store/projects-store";
 export type Task = {
   id: number;
   title: string;
-  status: string;
+  status: "Pending" | "In Progress" | "Completed";
   desc: string;
   projectId: number;
 };
@@ -15,7 +15,7 @@ export type Project = {
   id: number;
   name: string;
   description: string;
-  status: string;
+  status: "Pending" | "In Progress" | "Completed";
   startDate: string;
   endDate: string;
   progress: number;
@@ -37,7 +37,6 @@ export function useProjects() {
     deleteTask,
   } = useProjectsStore();
 
-
   useEffect(() => {
     fetchProjects();
   }, []);
@@ -55,13 +54,24 @@ export function useProjects() {
 
       const data: Project[] = await response.json();
 
+      // setProjects
+      data.forEach(project => {
+        if (!["Pending", "In Progress", "Completed"].includes(project.status)) {
+          project.status = "Pending";
+        }
+        project.tasks.forEach(task => {
+          if (!["Pending", "In Progress", "Completed"].includes(task.status)) {
+            task.status = "Pending";
+          }
+        });
+      });
+
       console.log("Projects fetched successfully:");
       console.log(`   Total: ${data.length} projects`);
 
-
       if (data.length > 0) {
         const firstProject = data[0];
-        console.log("🔍 First project structure:", {
+        console.log(" First project structure:", {
           id: firstProject.id,
           name: firstProject.name,
           hasId: typeof firstProject.id !== "undefined",
@@ -69,7 +79,6 @@ export function useProjects() {
           keysInObject: Object.keys(firstProject),
         });
       }
-
 
       setProjects(data);
       setError(null);
