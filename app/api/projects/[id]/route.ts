@@ -3,40 +3,61 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+// GET project by id
+export async function GET(req: Request, ctx: { params: { id: string } }) {
+  const { id } = ctx.params;
+
   try {
-    const projects = await prisma.project.findMany({
+    const project = await prisma.project.findUnique({
+      where: { id: parseInt(id) },
       include: { tasks: true },
-      orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(projects);
+    if (!project) {
+      return NextResponse.json({ error: "Project not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(project);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch project" }, { status: 500 });
   }
 }
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
+// PUT update project
+export async function PUT(req: Request, ctx: { params: { id: string } }) {
+  const { id } = ctx.params;
+  const body = await req.json();
 
-    const project = await prisma.project.create({
+  try {
+    const project = await prisma.project.update({
+      where: { id: parseInt(id) },
       data: {
         name: body.name,
-        description: body.description || "",
-        status: body.status || "Pending",
-        startDate: body.startDate || new Date().toISOString().split("T")[0],
-        endDate: body.endDate || "",
-        progress: body.progress || 0,
-        budget: body.budget || "$0",
+        description: body.description,
+        status: body.status,
+        progress: body.progress,
+        budget: body.budget,
       },
       include: { tasks: true },
     });
 
-    return NextResponse.json(project, { status: 201 });
+    return NextResponse.json(project);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to create project" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to update project" }, { status: 500 });
+  }
+}
+
+// DELETE project
+export async function DELETE(req: Request, ctx: { params: { id: string } }) {
+  const { id } = ctx.params;
+
+  try {
+    await prisma.project.delete({ where: { id: parseInt(id) } });
+    return NextResponse.json({ message: "Project deleted" });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Failed to delete project" }, { status: 500 });
   }
 }
