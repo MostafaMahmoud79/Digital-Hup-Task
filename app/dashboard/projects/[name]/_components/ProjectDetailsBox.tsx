@@ -30,6 +30,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useProjects } from "@/hooks/use-projects";
 import { useRouter } from "next/navigation";
 
+// types
+type Task = {
+  id: number;
+  title: string;
+  status: string;
+  desc: string;
+};
+
 type ProjectDetailsBoxProps = {
   projectId: number;
   editMode?: boolean;
@@ -51,7 +59,8 @@ export default function ProjectDetailsBox({
 
   const project = projects.find((p) => p.id === projectId);
 
-  const [selectedTask, setSelectedTask] = useState(null);
+  // null Task | null
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -94,13 +103,15 @@ export default function ProjectDetailsBox({
     }
   }, [project, resetProject]);
 
-  const openUpdateModal = (task) => {
+  // parameter
+  const openUpdateModal = (task: Task) => {
     setSelectedTask(task);
     reset(task);
     setShowUpdateModal(true);
   };
 
-  const submitUpdateProject = async (values) => {
+  // values
+  const submitUpdateProject = async (values: any) => {
     if (!project) return;
 
     try {
@@ -116,8 +127,6 @@ export default function ProjectDetailsBox({
 
       console.log("Project updated successfully");
       setShowEditProjectModal(false);
-
-
       router.push(`/dashboard/projects/${project.id}`);
     } catch (error) {
       console.error("Error updating project:", error);
@@ -127,7 +136,7 @@ export default function ProjectDetailsBox({
     }
   };
 
-  const submitAddTask = async (values) => {
+  const submitAddTask = async (values: any) => {
     if (!project) return;
 
     try {
@@ -150,7 +159,7 @@ export default function ProjectDetailsBox({
     }
   };
 
-  const submitUpdate = async (values) => {
+  const submitUpdate = async (values: any) => {
     if (!selectedTask || !project) return;
 
     try {
@@ -208,7 +217,7 @@ export default function ProjectDetailsBox({
           <CardContent className="pt-6 text-center text-red-700">
             <p className="text-lg font-semibold">Project Not Found</p>
             <p className="text-sm mt-2">
-              The project you're looking for doesn't exist.
+              The project you are looking for does not exist.
             </p>
           </CardContent>
         </Card>
@@ -240,7 +249,7 @@ export default function ProjectDetailsBox({
         </Button>
       </div>
 
-      {/*  Project Card  */}
+      {/* Project Card */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg sm:text-xl">{project.name}</CardTitle>
@@ -285,7 +294,7 @@ export default function ProjectDetailsBox({
         </CardContent>
       </Card>
 
-      {/*  Tasks Stats  */}
+      {/* Tasks Stats */}
       <div className="grid grid-cols-3 gap-2 sm:gap-4">
         <Card>
           <CardContent className="pt-6 text-center">
@@ -321,7 +330,7 @@ export default function ProjectDetailsBox({
 
       <Separator />
 
-      {/*  Tasks Section  */}
+      {/* Tasks Section */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h2 className="text-lg sm:text-xl font-semibold">
           Tasks ({tasksList.length})
@@ -372,7 +381,7 @@ export default function ProjectDetailsBox({
                     setShowDetailsModal(true);
                   }}
                 >
-                   Details
+                  Details
                 </Button>
 
                 <Button
@@ -401,7 +410,8 @@ export default function ProjectDetailsBox({
         )}
       </div>
 
-      {/*  SHOW DETAILS MODAL  */}
+      
+      {/* SHOW DETAILS MODAL */}
       <Dialog open={showDetailsModal} onOpenChange={setShowDetailsModal}>
         <DialogContent className="w-[95vw] sm:w-full sm:max-w-md">
           <DialogHeader>
