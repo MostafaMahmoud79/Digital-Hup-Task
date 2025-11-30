@@ -4,15 +4,19 @@ Live demo: [Project Dashboard on Vercel](https://digital-hup-task.vercel.app/)
 
 ![Login Page](login.png)  
 
+##
 
 ![Dashboard Page](dashboard.png)  
 
+##
 
 ![Charts](charts.png)  
 
+##
 
 ![Project Details](project-details.png)  
 
+##
 
 ![Tasks Page](tasks.png)  
 
