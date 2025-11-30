@@ -103,7 +103,7 @@ export const useProjectsStore = create(
 
 
       deleteTask: (projectId, taskId) => {
-        console.log(`🗑️ Deleting task ${taskId} from project ${projectId}`);
+        console.log(`Deleting task ${taskId} from project ${projectId}`);
         set({
           projects: get().projects.map((proj) =>
             proj.id === projectId
@@ -119,7 +119,7 @@ export const useProjectsStore = create(
 
       bulkUpdateTasks: (projectId, taskIds, updated) => {
         console.log(
-          `🔄 Bulk updating tasks in project ${projectId}:`,
+          `Bulk updating tasks in project ${projectId}:`,
           taskIds,
           updated
         );
