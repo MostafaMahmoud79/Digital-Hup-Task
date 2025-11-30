@@ -4,8 +4,8 @@ Live demo: [Project Dashboard on Vercel](https://digital-hup-task.vercel.app/)
 
 ![Login Page](login.png)  
 ![Dashboard Page](dashboard.png)  
-![Project Details](project-details.png)  
 ![Charts](charts.png)  
+![Project Details](project-details.png)  
 ![Tasks Page](tasks.png)  
 
 This is a [Next.js](https://nextjs.org) project using **React**, **TypeScript**, **TailwindCSS + ShadCN UI**, and **Prisma ORM** with SQLite for backend database handling.
